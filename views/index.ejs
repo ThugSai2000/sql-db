@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stored Procedures & Views</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f4f6f9;
+            --text-color: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            gap: 30px;
+        }
+
+        .procedures-container {
+            flex: 2;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .views-container {
+            flex: 1;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-title {
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .procedure-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            transition: transform 0.3s ease;
+        }
+
+        .procedure-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 16px;
+            appearance: none;
+            background-color: white;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%233498db" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position-x: 98%;
+            background-position-y: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            margin: 10px 0;
+            width: 100%;
+            text-decoration: none;
+            text-align: center;
+            font-size: large;
+        }
+
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="procedures-container">
+            <h2 class="section-title">Stored Procedures</h2>
+            
+            <div class="procedure-card">
+                <h3>Get Companies by Industry</h3>
+                <form method="post" action="/get_companies_by_industry-s-p">
+                    <div class="form-group">
+                        <select name="query" id="industrySelect1">
+                            <option value="">Select Industry</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn">Search Companies</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="procedure-card">
+                <h3>Get Company Info By Name</h3>
+                <form method="post" action="/get_company_info_by_name-s-p">
+                    <div class="form-group">
+                        <select name="query" id="companyselect">
+                            <option value="">Select Company</option>
+                            
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn">Search Company</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="views-container">
+            <h2 class="section-title">Views</h2>
+            <!-- <button class="btn btn-secondary" onclick="window.location.href='/top-companies-view'">
+                Top 10 Companies
+            </button> -->
+            <a href="/top-companies-view"class="btn btn-secondary">Top 10 Companies</a>
+            <a href="/high-growth-companies-view"class="btn btn-secondary">High Growth Companies</a>
+            
+        </div>
+    </div>
+
+    <script>
+      
+document.addEventListener('DOMContentLoaded', () => {
+    const industrySelect = document.getElementById('industrySelect1');
+    const companySelect = document.getElementById('companyselect');
+
+    // Fetch industries from your API endpoint
+    fetch('/industry-names')
+        .then(response => response.json())
+        .then(industries => {
+            console.log(industries);
+            
+            // Populate the select dropdown
+            industries.map((industry) => {
+                const option = document.createElement('option');
+                option.value = industry.industry;
+                option.textContent = industry.industry;
+                industrySelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching industries:', error);
+        });
+
+        // Fetch industries from your API endpoint
+    fetch('/company-names')
+        .then(response => response.json())
+        .then(companies => {
+            console.log(companies[0]);
+            
+            // Populate the select dropdown
+            companies.map((company) => {
+                const option = document.createElement('option');
+                option.value = company.name;
+                option.textContent = company.name;
+                companySelect.appendChild(option);
+                console.log(company.name);
+                
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching companies:', error);
+        });
+});
+    </script>
+</body>
+</html>

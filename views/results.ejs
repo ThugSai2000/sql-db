@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        thead {
+            background-color: #2c3e50;
+            color: white;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e6e6e6;
+            transition: background-color 0.3s ease;
+        }
+        th {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .no-results {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+
+    <% if (!results || results.length === 0) { %>
+        <div class="no-results">
+            <p>No results found.</p>
+        </div>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <% Object.keys(results[0]).forEach(function(key) { %>
+                        <th><%= key %></th>
+                    <% }); %>
+                </tr>
+            </thead>
+            <tbody>
+                <% results.forEach(function(result) { %>
+                    <tr>
+                        <% Object.values(result).forEach(function(value) { %>
+                            <td><%= value %></td>
+                        <% }); %>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } %>
+</body>
+</html>
